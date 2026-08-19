@@ -151,6 +151,23 @@ html.is-leaving body::before {
   transform: scaleY(1);
   transform-origin: bottom;
 }
+.cursor-light {
+  position: fixed;
+  z-index: 120;
+  top: 0;
+  left: 0;
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(circle, rgba(98,197,255,.18) 0%, rgba(11,163,255,.09) 24%, rgba(11,163,255,0) 68%);
+  mix-blend-mode: screen;
+  transform: translate3d(-50%, -50%, 0);
+  transition: opacity .45s var(--ease);
+  will-change: transform, opacity;
+}
+.cursor-light.is-active { opacity: .9; }
 img, svg, video { display: block; max-width: 100%; height: auto; }
 button, input, select, textarea { font: inherit; color: inherit; }
 input, select, textarea { color-scheme: dark; }
@@ -776,6 +793,18 @@ table { border-collapse: collapse; width: 100%; }
   z-index: 20;
   margin-top: calc(-1 * var(--cmd-overlap));
 }
+.command::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: var(--cmd-overlap);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, #0b1626 0%, #08111e 72%, #060d18 100%);
+}
+.command > .container { position: relative; z-index: 1; }
 .command-panel {
   background: linear-gradient(180deg, #0e1c31 0%, #0b1626 100%);
   border: 1px solid rgba(98,197,255,.22);
@@ -2529,6 +2558,7 @@ table { border-collapse: collapse; width: 100%; }
 @media (max-width: 900px) {
   :root { --nav-h: 64px; }
   .chapter-rail { display: none; }
+  .cursor-light { display: none; }
   .nav-links, .nav-utility .util-link { display: none; }
   .nav-burger { display: inline-flex; }
   .nav-inner { gap: 16px; }
@@ -2587,6 +2617,7 @@ table { border-collapse: collapse; width: 100%; }
   .hero-media img { transform: none; animation: none; }
   .hero-video { display: none !important; }
   body::before { display: none; }
+  .cursor-light { display: none; }
   .hero::before { opacity: .4; }
   .hero-lens { opacity: 1; animation: none; }
   .hero-coordinate { opacity: 1; animation: none; }

@@ -157,6 +157,50 @@
     sections.forEach(function (section) { io.observe(section); });
   }
 
+  /* ---------------- Desktop cursor light ----------------
+     A low-contrast light follows the pointer with a small amount of lag. It
+     stays out of the interaction layer and is disabled for touch/reduced
+     motion so it never becomes a performance or accessibility tax. */
+  function initCursorLight() {
+    if (reducedMotion || isCoarse || isNarrow) return;
+    var light = $('#cursorLight');
+    if (!light) return;
+
+    var targetX = 0;
+    var targetY = 0;
+    var currentX = -400;
+    var currentY = -400;
+    var frame = 0;
+    var active = false;
+
+    function stop() {
+      active = false;
+      light.classList.remove('is-active');
+    }
+    function render() {
+      currentX += (targetX - currentX) * .16;
+      currentY += (targetY - currentY) * .16;
+      light.style.transform = 'translate3d(' + currentX.toFixed(1) + 'px,' + currentY.toFixed(1) + 'px,0) translate(-50%,-50%)';
+      if (Math.abs(targetX - currentX) > .2 || Math.abs(targetY - currentY) > .2) {
+        frame = requestAnimationFrame(render);
+      } else {
+        frame = 0;
+      }
+    }
+    document.addEventListener('pointermove', function (e) {
+      if (e.pointerType === 'touch') return;
+      targetX = e.clientX;
+      targetY = e.clientY;
+      if (!active) {
+        active = true;
+        light.classList.add('is-active');
+      }
+      if (!frame) frame = requestAnimationFrame(render);
+    }, { passive: true });
+    window.addEventListener('blur', stop, { passive: true });
+    document.addEventListener('mouseleave', stop, { passive: true });
+  }
+
   /* ---------------- Reveal on scroll ----------------
      One shared observer for ALL .reveal/.reveal-scale nodes — including
      ones injected after boot (scale stat rows, news items, …). A
@@ -770,6 +814,7 @@
     initNav();
     initPageTransitions();
     initChapterRail();
+    initCursorLight();
     initReveals();
     initStats();
     initFleet();
