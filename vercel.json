@@ -1,0 +1,12 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    { "source": "/we-are.php", "destination": "/about/", "permanent": true },
+    { "source": "/we-do.php", "destination": "/shipping/", "permanent": true },
+    { "source": "/we-have.php", "destination": "/equipment/", "permanent": true },
+    { "source": "/schedule.php", "destination": "/schedules/", "permanent": true },
+    { "source": "/career.php", "destination": "/careers/", "permanent": true },
+    { "source": "/contact.php", "destination": "/offices/", "permanent": true },
+    { "source": "/privacy-policy.php", "destination": "/privacy/", "permanent": true }
+  ]
+}

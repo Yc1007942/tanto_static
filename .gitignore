@@ -1,0 +1,9 @@
+# Local deployment metadata
+.vercel/
+
+# Generated/local artifacts
+*.log
+docs/screenshots/
+
+# Source/master media is not part of the site deployment
+assets/video/Hero Video.mp4

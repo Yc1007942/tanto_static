@@ -1,0 +1,9 @@
+# Project documentation and local-only tooling
+README.md
+dev-server.mjs
+data/*.json
+docs/
+*.log
+
+# Unused source/master media
+assets/video/Hero Video.mp4

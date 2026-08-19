@@ -74,9 +74,9 @@ Static, dependency-free HTML/CSS/JS (no build step, no framework). GSAP + Scroll
 │   │                            Bersama / Jaya; logo-t.webp = red T mark for dark surfaces,
 │   │                            logo-flag.webp = blue flag for light surfaces; hero-poster.webp
 │   │                            = poster frame for the hero video)
-│   ├── video/hero.mp4          Homepage hero video (1080p H.264, ~41 MB, faststart;
+│   ├── video/hero.mp4          Homepage hero video (720p H.264, ~20 MB, faststart;
 │   │                           plays on desktop ≥901px only — mobile & reduced-motion keep
-│   │                           the poster image). Master file "Hero Video.mp4" kept beside it.
+│   │                           the poster image)
 │   ├── map/indonesia-land.svg  Indonesia land geometry (1920×764, equirect 94–142°E)
 │   └── vendor/                 gsap.min.js, ScrollTrigger.min.js
 ├── data/
@@ -86,8 +86,8 @@ Static, dependency-free HTML/CSS/JS (no build step, no framework). GSAP + Scroll
 │   └── offices.json/.js        32 offices (address, phones, email, lat/lng, region)
 ├── dev-server.mjs              Static server + /api/tcm/* proxy (port 4173);
 │                               supports HTTP Range (206) for video seeking
-├── sitemap.xml · robots.txt · redirects.txt
-└── docs/screenshots/           Verification captures (1440×900, 1920×1080, 390×844)
+├── sitemap.xml · robots.txt · vercel.json
+└── .vercelignore                Keeps local source/docs out of the deployment
 ```
 
 ### Data pipeline
@@ -115,9 +115,10 @@ node dev-server.mjs        # → http://localhost:4173
 
 ### Production deployment
 
-1. Upload the site root to `www.tantonet.com` (keep `/dashboard/` as-is).
-2. Apply the 301 map in `redirects.txt`.
-3. No build step, no environment variables, no API keys — the API client auto-detects origin.
+1. Import the repository into Vercel with no build command; this is a static site.
+2. Set the production domain to `www.tantonet.com`; `vercel.json` contains the old-URL 301 redirects.
+3. Keep `/dashboard/` on its existing application or add a Vercel rewrite to that origin.
+4. No build step, environment variables or API keys are required — the API client auto-detects origin.
 
 ---
 
@@ -133,16 +134,9 @@ All copy, figures, routes, offices and testimonials come from the live tantonet.
 
 ---
 
-## 5. Screenshot documentation
+## 5. Deployment footprint
 
-`docs/screenshots/` contains verification captures at **1440×900**, **1920×1080** and **390×844**:
-
-- `home_*` — homepage hero + all 10 scenes + footer (1440×900, 1920×1080, 390×844).
-- `sub_*` — all 15 subpages + 404: page hero plus key content sections (29 shots at 1440×900; routes map + 42-route table, offices map + 32-office directory, schedules form + region tables, fleet viewer, 20'/40' container viewer, timeline, news list, etc.) and 4 mobile spot-checks at 390×844 (home, tracking, routes map, offices).
-
-**Capture pipeline (how the `sub_*` set was produced):** each shot is a fully isolated headless-Chrome instance — one OS process per job, a unique fixed debug port per job, a fresh user-data-dir, exact viewport via `Emulation.setDeviceMetricsOverride`, `location.href` assertion per job, console-error collection (all 33 jobs: clean), and per-file pixel-size + MD5 verification. Earlier corrupted batch captures (unstyled renders / cross-page ghosts) were traced to debug-port and profile collisions in shared pipeline runs — a capture-pipeline problem, not a site bug; in-page geometry checks (`getBoundingClientRect`) always confirmed the live layout was correct.
-
-The set was captured after two mobile/accessibility CSS fixes (both in `assets/css/main.css`): the network stage no longer pins a 190vh sticky scroll on ≤900px screens (the story is skipped on small screens, so the pin only added dead scroll), and `prefers-reduced-motion` users now get a 640px-tall map viewport instead of the map collapsing to zero height.
+Verification screenshots and source JSON are kept out of the Vercel upload by `.vercelignore`. The generated `data/*.js` wrappers remain in the deployment because the pages load them directly in the browser.
 
 ---
 
