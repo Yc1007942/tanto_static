@@ -564,8 +564,10 @@
       var i = 0;
       while (i < segs.length - 1 && target > lens[i]) { target -= lens[i]; i++; }
       var pt = segs[i].getPointAtLength(target);
-      vesselDot.setAttribute('cx', pt.x);
-      vesselDot.setAttribute('cy', pt.y);
+      var lookAhead = Math.min(lens[i], target + 6);
+      var ahead = segs[i].getPointAtLength(lookAhead);
+      var angle = Math.atan2(ahead.y - pt.y, ahead.x - pt.x) * 180 / Math.PI;
+      vesselDot.setAttribute('transform', 'translate(' + pt.x.toFixed(1) + ' ' + pt.y.toFixed(1) + ') rotate(' + angle.toFixed(1) + ')');
       vesselDot.setAttribute('visibility', 'visible');
       voyage = requestAnimationFrame(frame);
     }

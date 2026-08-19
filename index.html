@@ -142,6 +142,28 @@
     </p>
   </nav>
 
+  <!-- Homepage chapter rail: a quiet editorial index for the long-form story. -->
+  <aside class="chapter-rail" id="chapterRail" aria-label="Homepage chapters">
+    <div class="chapter-rail-head">
+      <span>INDEX</span>
+      <strong id="chapterCurrent">01</strong>
+    </div>
+    <ol>
+      <li><a href="#ocean" data-chapter="ocean" data-label="Open water"><span class="cr-dot"></span><span class="cr-label">Open water</span></a></li>
+      <li><a href="#command" data-chapter="command" data-label="Command deck"><span class="cr-dot"></span><span class="cr-label">Command deck</span></a></li>
+      <li><a href="#network" data-chapter="network" data-label="Network"><span class="cr-dot"></span><span class="cr-label">Network</span></a></li>
+      <li><a href="#scale" data-chapter="scale" data-label="Scale"><span class="cr-dot"></span><span class="cr-label">Scale</span></a></li>
+      <li><a href="#journey" data-chapter="journey" data-label="Journey"><span class="cr-dot"></span><span class="cr-label">Journey</span></a></li>
+      <li><a href="#fleet" data-chapter="fleet" data-label="Fleet"><span class="cr-dot"></span><span class="cr-label">Fleet</span></a></li>
+      <li><a href="#digital" data-chapter="digital" data-label="Digital"><span class="cr-dot"></span><span class="cr-label">Digital</span></a></li>
+      <li><a href="#heritage" data-chapter="heritage" data-label="Heritage"><span class="cr-dot"></span><span class="cr-label">Heritage</span></a></li>
+      <li><a href="#stories" data-chapter="stories" data-label="Stories"><span class="cr-dot"></span><span class="cr-label">Stories</span></a></li>
+      <li><a href="#news" data-chapter="news" data-label="News"><span class="cr-dot"></span><span class="cr-label">News</span></a></li>
+      <li><a href="#departure" data-chapter="departure" data-label="Departure"><span class="cr-dot"></span><span class="cr-label">Departure</span></a></li>
+    </ol>
+    <span class="chapter-rail-foot">SCROLL TO EXPLORE</span>
+  </aside>
+
   <main id="main">
 
     <!-- ================= SCENE 1 — OCEAN ================= -->
@@ -151,6 +173,16 @@
         <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="assets/img/hero-poster.webp">
           <source src="assets/video/hero.mp4" type="video/mp4">
         </video>
+      </div>
+      <div class="hero-lens" aria-hidden="true">
+        <span class="hero-lens-kicker">FIELD NOTE 001</span>
+        <span class="hero-lens-rule"></span>
+        <span>OPEN WATER / INDONESIA</span>
+      </div>
+      <div class="hero-coordinate" aria-hidden="true">
+        <span class="hero-coordinate-label">ORIGIN</span>
+        <strong>SURABAYA</strong>
+        <span>EST. 1971 · EAST JAVA</span>
       </div>
       <div class="container hero-inner">
         <p class="overline" style="animation: fade-up .9s var(--ease) forwards 150ms; opacity:0">Container Shipping · Since 1971</p>
@@ -324,7 +356,11 @@
                   <g id="mapRoutesG"></g>
                   <g id="mapSelG"></g>
                   <g id="mapPortsG"></g>
-                  <circle id="mapVessel" class="map-vessel" r="4" cx="-100" cy="-100" visibility="hidden"/>
+                  <g id="mapVessel" class="map-vessel" transform="translate(-100 -100)" visibility="hidden" aria-hidden="true">
+                    <circle class="vessel-aura" r="10"/>
+                    <path class="vessel-wake" d="M-12 0h-9 M-10 3h-6"/>
+                    <path class="vessel-body" d="M8 0 2-3 -5-3 -9 0 -5 3 2 3Z"/>
+                  </g>
                 </svg>
               </div>
             </div>

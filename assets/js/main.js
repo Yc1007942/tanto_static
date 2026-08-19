@@ -102,6 +102,61 @@
     }
   }
 
+  /* ---------------- Editorial page transitions ----------------
+     Keep same-page anchors immediate, but give internal document changes a
+     short dark curtain so the site reads as one composed experience. */
+  function initPageTransitions() {
+    if (reducedMotion) return;
+    document.addEventListener('click', function (e) {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      var link = e.target.closest && e.target.closest('a');
+      if (!link || link.target === '_blank' || link.hasAttribute('download')) return;
+      var raw = link.getAttribute('href');
+      if (!raw || raw.charAt(0) === '#' || raw.indexOf('mailto:') === 0 || raw.indexOf('tel:') === 0) return;
+      var next;
+      try { next = new URL(raw, window.location.href); } catch (_) { return; }
+      if (next.origin !== window.location.origin) return;
+      if (next.pathname === window.location.pathname && next.search === window.location.search) return;
+      e.preventDefault();
+      document.documentElement.classList.add('is-leaving');
+      window.setTimeout(function () { window.location.assign(next.href); }, 380);
+    });
+  }
+
+  /* ---------------- Homepage chapter rail ---------------- */
+  function initChapterRail() {
+    var rail = $('#chapterRail');
+    if (!rail) return;
+    var links = $all('a[data-chapter]', rail);
+    var current = $('#chapterCurrent', rail);
+    var sections = links.map(function (link) { return $('#' + link.dataset.chapter); }).filter(Boolean);
+    if (!links.length || !sections.length) return;
+
+    function setActive(id) {
+      var activeIndex = -1;
+      links.forEach(function (link, i) {
+        var on = link.dataset.chapter === id;
+        link.classList.toggle('active', on);
+        if (on) {
+          activeIndex = i;
+          link.setAttribute('aria-current', 'location');
+        } else {
+          link.removeAttribute('aria-current');
+        }
+      });
+      if (current && activeIndex > -1) current.textContent = String(activeIndex + 1).padStart(2, '0');
+    }
+    setActive(sections[0].id);
+
+    if (!('IntersectionObserver' in window)) return;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) setActive(entry.target.id);
+      });
+    }, { threshold: 0, rootMargin: '-42% 0px -48% 0px' });
+    sections.forEach(function (section) { io.observe(section); });
+  }
+
   /* ---------------- Reveal on scroll ----------------
      One shared observer for ALL .reveal/.reveal-scale nodes — including
      ones injected after boot (scale stat rows, news items, …). A
@@ -713,6 +768,8 @@
   /* ---------------- Boot ---------------- */
   function boot() {
     initNav();
+    initPageTransitions();
+    initChapterRail();
     initReveals();
     initStats();
     initFleet();
