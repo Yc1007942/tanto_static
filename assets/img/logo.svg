@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 336 64" role="img" aria-label="Tanto Intim Line">
+  <g>
+    <!-- pole -->
+    <rect x="4" y="6" width="3.4" height="52" rx="1.7" fill="currentColor"/>
+    <!-- pennant -->
+    <path d="M7 10.5 C 30 4.5, 46 17.5, 70 10.5 L 70 45.5 C 46 52.5, 30 39.5, 7 45.5 Z" fill="currentColor"/>
+    <!-- diamond -->
+    <path d="M38.5 15.5 L 51 28 L 38.5 40.5 L 26 28 Z" fill="#ffffff" stroke="#ed2024" stroke-width="3.4" stroke-linejoin="miter"/>
+    <!-- T -->
+    <path d="M34.4 23.2 h8.2 v3.4 h-2.4 v7.6 h-3.4 v-7.6 h-2.4 Z" fill="#ed2024"/>
+  </g>
+  <text x="84" y="45" font-family="Archivo, 'Helvetica Neue', Arial, sans-serif" font-size="37" font-weight="800" letter-spacing="7" fill="currentColor">TANTO</text>
+</svg>
