@@ -396,7 +396,11 @@ table { border-collapse: collapse; width: 100%; }
 }
 .mega-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .mega a {
-  display: block; padding: 10px 12px; border-radius: var(--r-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-radius: var(--r-sm);
   text-decoration: none;
 }
 .mega a:hover { background: var(--paper); }
