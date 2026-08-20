@@ -121,6 +121,12 @@
       document.documentElement.classList.add('is-leaving');
       window.setTimeout(function () { window.location.assign(next.href); }, 380);
     });
+
+    window.addEventListener('pageshow', function (e) {
+      if (e.persisted) {
+        document.documentElement.classList.remove('is-leaving');
+      }
+    });
   }
 
   /* ---------------- Homepage chapter rail ---------------- */
@@ -689,6 +695,18 @@
       if (e.key === 'ArrowLeft') show(idx - 1);
       if (e.key === 'ArrowRight') show(idx + 1);
     });
+
+    var touchStartX = 0;
+    stage.addEventListener('touchstart', function (e) {
+      touchStartX = e.changedTouches[0].clientX;
+    }, { passive: true });
+
+    stage.addEventListener('touchend', function (e) {
+      var diff = e.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(diff) > 45) {
+        show(diff < 0 ? idx + 1 : idx - 1);
+      }
+    }, { passive: true });
   }
 
   /* ---------------- Heritage timeline ---------------- */
