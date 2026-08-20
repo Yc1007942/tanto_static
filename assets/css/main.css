@@ -2738,14 +2738,38 @@ table { border-collapse: collapse; width: 100%; }
 }
 .section-dark .fact-strip { border-color: var(--line-dark); }
 .fact-strip .fs-item { min-width: 120px; }
+
+/* Enforce uniform font size, weight, and color across plain text and spans */
 .fact-strip .fs-item b {
-  display: block;
+  display: flex;
+  align-items: baseline;
+  font-family: var(--font-sans);
   font-size: clamp(1.5rem, 2.6vw, 2.1rem);
   font-weight: 800;
   font-stretch: 108%;
   letter-spacing: -.02em;
   line-height: 1.1;
+  color: var(--ink-900-txt);
+  font-variant-numeric: tabular-nums;
 }
+.section-dark .fact-strip .fs-item b {
+  color: #fff;
+}
+
+.fact-strip .fs-item b .stat-count {
+  font: inherit;
+  color: inherit;
+}
+
+.fact-strip .fs-item b .suffix {
+  font: inherit;
+  color: var(--t-blue);
+  margin-left: 1px;
+}
+.section-dark .fact-strip .fs-item b .suffix {
+  color: var(--t-azure-soft);
+}
+
 .fact-strip .fs-item span {
   display: block;
   margin-top: 4px;

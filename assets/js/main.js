@@ -264,38 +264,69 @@
     requestAnimationFrame(step);
   }
 
-  function initStats() {
-    var wrap = $('#statRows');
-    if (!wrap) return;
-    var stats = CONTENT.stats || [];
-    var rows = stats.map(function (s) {
-      var row = el('div', { class: 'stat-row reveal' });
-      var num = el('div', { class: 'stat-num' });
-      var numInner = el('span', { 'data-count': String(s.value), class: 'stat-count' });
-      numInner.textContent = s.format === 'year' ? String(s.value) : '0';
-      if (s.suffix) num.appendChild(el('span', { class: 'suffix' }, s.suffix));
-      num.insertBefore(numInner, s.suffix ? num.firstChild : null);
-      if (s.format === 'year') { numInner.parentElement.insertBefore(numInner, num.firstChild); }
-      row.appendChild(num);
-      var meta = el('div');
-      meta.appendChild(el('p', { class: 'stat-label' }, esc(s.label)));
-      meta.appendChild(el('p', { class: 'stat-detail' }, esc(s.detail)));
-      row.appendChild(meta);
-      return row;
-    });
-    rows.forEach(function (r) { wrap.appendChild(r); });
+  /* ---------------- Scale / stats ---------------- */
+  function fmtNum(n) { return n.toLocaleString('en-US'); }
 
-    var io = new IntersectionObserver(function (entries) {
+  function countUp(node, target, dur) {
+    if (reducedMotion) { node.textContent = fmtNum(target); return; }
+    var t0 = null;
+    function step(ts) {
+      if (!t0) t0 = ts;
+      var p = Math.min(1, (ts - t0) / dur);
+      var e = 1 - Math.pow(1 - p, 3);
+      node.textContent = fmtNum(Math.round(target * e));
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  function initStats() {
+    var observer = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {
         if (!en.isIntersecting) return;
-        io.unobserve(en.target);
+        observer.unobserve(en.target);
         en.target.querySelectorAll('.stat-count').forEach(function (c) {
           var target = parseInt(c.getAttribute('data-count'), 10);
-          if (c.textContent !== '1971') countUp(c, target, 1600);
+          if (!isNaN(target)) countUp(c, target, 1600);
         });
       });
-    }, { threshold: 0.4 });
-    $all('.stat-row', wrap).forEach(function (r) { io.observe(r); });
+    }, { threshold: 0.3 });
+
+    // 1. Dynamic homepage stat rows (from CONTENT.stats)
+    var wrap = $('#statRows');
+    if (wrap) {
+      var stats = CONTENT.stats || [];
+      var rows = stats.map(function (s) {
+        var row = el('div', { class: 'stat-row reveal' });
+        var num = el('div', { class: 'stat-num' });
+        var numInner = el('span', { 'data-count': String(s.value), class: 'stat-count' });
+        numInner.textContent = s.format === 'year' ? String(s.value) : '0';
+        if (s.suffix) num.appendChild(el('span', { class: 'suffix' }, s.suffix));
+        num.insertBefore(numInner, s.suffix ? num.firstChild : null);
+        row.appendChild(num);
+        var meta = el('div');
+        meta.appendChild(el('p', { class: 'stat-label' }, esc(s.label)));
+        meta.appendChild(el('p', { class: 'stat-detail' }, esc(s.detail)));
+        row.appendChild(meta);
+        return row;
+      });
+      rows.forEach(function (r) { wrap.appendChild(r); observer.observe(r); });
+    }
+
+    // 2. Static subpage stat numbers (e.g. .fact-strip on /about/, /history/, etc.)
+    $all('.fact-strip .fs-item b').forEach(function (b) {
+      var raw = b.textContent.trim();
+      // Ignore founding year (1971) so it doesn't count up from 0
+      if (raw === '1971') return;
+
+      var num = parseInt(raw.replace(/[^0-9]/g, ''), 10);
+      if (!isNaN(num) && num > 0) {
+        var suffix = raw.replace(/[0-9,\s]/g, ''); // extracts '+', 'M+', etc.
+        b.innerHTML = '<span class="stat-count" data-count="' + num + '">0</span>' + (suffix ? '<span class="suffix">' + esc(suffix) + '</span>' : '');
+        var parentItem = b.closest('.fs-item') || b;
+        observer.observe(parentItem);
+      }
+    });
   }
 
   /* ---------------- Fleet ---------------- */
@@ -856,6 +887,26 @@
     attachContainerFormatter($('#opsContainer'));
   }
 
+  /* ---------------- Maritime Live Clock ---------------- */
+  function initLiveClock() {
+    var status = $('.command-status');
+    if (!status) return;
+    var clockEl = el('span', { class: 'mono', style: 'margin-left: 8px; opacity: 0.85;' });
+    status.appendChild(clockEl);
+
+    function update() {
+      var now = new Date();
+      // Convert local browser time to UTC+7 (WIB / Surabaya HQ)
+      var wib = new Date(now.getTime() + (now.getTimezoneOffset() + 420) * 60000);
+      var hrs = String(wib.getHours()).padStart(2, '0');
+      var min = String(wib.getMinutes()).padStart(2, '0');
+      var sec = String(wib.getSeconds()).padStart(2, '0');
+      clockEl.textContent = hrs + ':' + min + ':' + sec + ' WIB';
+    }
+    update();
+    setInterval(update, 1000);
+  }
+
   /* ---------------- Boot ---------------- */
   function boot() {
     initNav();
@@ -877,6 +928,7 @@
     initJourney();
     initHeroParallax();
     initContainerFormatters();
+    initLiveClock();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
