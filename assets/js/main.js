@@ -827,6 +827,26 @@
     }, { passive: true });
   }
 
+  /* ---------------- ISO 6346 Container Formatter ---------------- */
+  function initContainerFormatters() {
+    function attachContainerFormatter(input) {
+      if (!input) return;
+      input.addEventListener('input', function () {
+        var raw = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        var formatted = raw;
+        if (raw.length > 4 && raw.length <= 10) {
+          formatted = raw.slice(0, 4) + ' ' + raw.slice(4);
+        } else if (raw.length > 10) {
+          formatted = raw.slice(0, 4) + ' ' + raw.slice(4, 10) + '-' + raw.slice(10, 11);
+        }
+        input.value = formatted;
+      });
+    }
+
+    attachContainerFormatter($('#containerNo'));
+    attachContainerFormatter($('#opsContainer'));
+  }
+
   /* ---------------- Boot ---------------- */
   function boot() {
     initNav();
@@ -847,6 +867,7 @@
     initNews();
     initJourney();
     initHeroParallax();
+    initContainerFormatters();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
