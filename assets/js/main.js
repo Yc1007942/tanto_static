@@ -356,16 +356,25 @@
       var maxSp = Math.max.apply(null, rows.map(function (r) { return r.speed; }));
       var maxRf = Math.max.apply(null, rows.map(function (r) { return r.reefer; }));
       var maxDwt = Math.max.apply(null, rows.map(function (r) { return r.dwt; }));
-      specs.innerHTML =
-        '<h3 class="fs-title">' + esc(cat.title) + '</h3>' +
-        '<p class="fs-blurb">' + esc(cat.blurb) + '</p>' +
-        '<dl class="fs-grid">' +
-        '<div><dt>TEU Capacity</dt><dd>' + (min === max ? min : min + '–' + max) + '</dd></div>' +
-        '<div><dt>Service Speed</dt><dd>' + (minSp === maxSp ? minSp : minSp + '–' + maxSp) + '<small> kn</small></dd></div>' +
-        '<div><dt>Reefer Plugs</dt><dd>≤ ' + maxRf + '</dd></div>' +
-        '<div><dt>Max DWT</dt><dd>' + fmtNum(maxDwt) + '<small> t</small></dd></div>' +
-        '</dl>' +
-        '<ul class="fs-classes">' + cat.classes.map(function (n) { return '<li>' + esc(n) + '</li>'; }).join('') + '</ul>';
+
+      // 1. Trigger the fade-out
+      specs.classList.add('is-updating');
+
+      // 2. Wait 150ms for fade-out, update markup, then fade back in
+      setTimeout(function () {
+        specs.innerHTML =
+          '<h3 class="fs-title">' + esc(cat.title) + '</h3>' +
+          '<p class="fs-blurb">' + esc(cat.blurb) + '</p>' +
+          '<dl class="fs-grid">' +
+          '<div><dt>TEU Capacity</dt><dd>' + (min === max ? min : min + '–' + max) + '</dd></div>' +
+          '<div><dt>Service Speed</dt><dd>' + (minSp === maxSp ? minSp : minSp + '–' + maxSp) + '<small> kn</small></dd></div>' +
+          '<div><dt>Reefer Plugs</dt><dd>≤ ' + maxRf + '</dd></div>' +
+          '<div><dt>Max DWT</dt><dd>' + fmtNum(maxDwt) + '<small> t</small></dd></div>' +
+          '</dl>' +
+          '<ul class="fs-classes">' + cat.classes.map(function (n) { return '<li>' + esc(n) + '</li>'; }).join('') + '</ul>';
+
+        specs.classList.remove('is-updating');
+      }, 150);
     }
     selectCat('feeder', $('#fleetCat-feeder'));
 

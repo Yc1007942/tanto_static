@@ -1721,6 +1721,11 @@ table { border-collapse: collapse; width: 100%; }
   display: flex;
   flex-direction: column;
   background: var(--paper);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.fleet-specs.is-updating {
+  opacity: 0.2;
+  transform: translateY(4px);
 }
 .fleet-specs .fs-title {
   font-size: 1.35rem;
